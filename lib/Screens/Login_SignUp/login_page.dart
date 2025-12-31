@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:personality_tracker/Database/user_service.dart';
 import 'package:personality_tracker/Screens/Home Page/Homepage.dart';
 import 'package:personality_tracker/Screens/Login_SignUp/sign_up.dart';
 import 'package:personality_tracker/Screens/User_Screens/user_screen.dart';
@@ -34,61 +35,20 @@ class _LoginpageState extends State<Loginpage> {
       final GoogleSignInAuthentication googleAuth =
       await googleUser.authentication;
 
-      final AuthCredential credential =
-      GoogleAuthProvider.credential(
+      final credential = GoogleAuthProvider.credential(
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
 
-      UserCredential userCredential =
-      await FirebaseAuth.instance
-          .signInWithCredential(credential);
-
-      User user = userCredential.user!;
-
-      // Save user in Firestore (only once / overwrite safe)
-      await FirebaseFirestore.instance
-          .collection("users")
-          .doc(user.uid)
-          .set({
-        "full_name": user.displayName ?? "Google User",
-        "email": user.email,
-        "age": 0,
-        "gender": "Not Specified",
-      }, SetOptions(merge: true));
-
-      // Save login state
-      SharedPreferences prefs =
-      await SharedPreferences.getInstance();
-      await prefs.setBool("isLoggedIn", true);
-      await prefs.setString("email", user.email ?? "");
-      await prefs.setString("full_name", user.displayName ?? "");
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Google Login Successful",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: Colors.green,
-        ),
-      );
-      if (!mounted) return;
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => Homepage()),
-            (route) => false,
-      );
+      await FirebaseAuth.instance.signInWithCredential(credential);
+      await UserService.saveUser();
 
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Google Sign-In Failed",
-              style: TextStyle(color: Colors.white)),
-          backgroundColor: Colors.redAccent,
-        ),
-      );
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text(e.toString())));
     }
   }
+
 
 
   @override
@@ -194,36 +154,28 @@ class _LoginpageState extends State<Loginpage> {
                       }
 
                       try {
-                        UserCredential userCredential =
                         await FirebaseAuth.instance.signInWithEmailAndPassword(
                           email: user,
                           password: login_pass,
                         );
 
-                        User firebaseUser = userCredential.user!;
-
-                        SharedPreferences prefs =
-                        await SharedPreferences.getInstance();
-                        await prefs.setBool("isLoggedIn", true);
-                        await prefs.setString("email", firebaseUser.email ?? "");
+                        // 🔥 Store user in Firestore (if not exists)
+                        await UserService.saveUser();
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Login Successfully",
-                                style: TextStyle(color: Colors.white)),
+                          const SnackBar(
+                            content: Text("Login Successful"),
                             backgroundColor: Colors.green,
                           ),
                         );
 
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => Homepage()),
-                        );
+                        // ✅ DO NOT navigate
+                        // main.dart will automatically open Homepage
+
                       } on FirebaseAuthException catch (e) {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text("Invalid Email or Password",
-                                style: TextStyle(color: Colors.white)),
+                          const SnackBar(
+                            content: Text("Invalid email or password"),
                             backgroundColor: Colors.redAccent,
                           ),
                         );
