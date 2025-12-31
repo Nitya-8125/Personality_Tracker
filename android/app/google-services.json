@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "242107032156",
+    "project_id": "personality-tracker-38019",
+    "storage_bucket": "personality-tracker-38019.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:242107032156:android:f446501d38b27d6a9cfc99",
+        "android_client_info": {
+          "package_name": "com.example.personality_tracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "242107032156-ma2hst5ubov9v5gfvgapohcg691ccc6c.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.personality_tracker",
+            "certificate_hash": "6198a84bfbbff8893fd702b714870ef366fe8bdf"
+          }
+        },
+        {
+          "client_id": "242107032156-nii8vno0fbotfu55krsgocluh4lm1gjb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBu0r7lM2YUXnkWMOqxtnUdm-OrLRAzNDY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "242107032156-nii8vno0fbotfu55krsgocluh4lm1gjb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
