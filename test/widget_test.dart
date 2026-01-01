@@ -7,7 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:personality_tracker/Screens/Intro%20Page/intro_page1.dart';
+import 'package:personality_tracker/main.dart';
 
 
 void main() {

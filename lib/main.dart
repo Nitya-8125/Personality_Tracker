@@ -1,39 +1,54 @@
-import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:personality_tracker/Screens/Intro%20Page/intro_page1.dart';
 
-import 'Screens/Login_SignUp/login_page.dart';
+import 'Screens/Intro Page/splash_screen.dart';
 import 'Screens/Home Page/Homepage.dart';
+import 'Screens/Login_SignUp/login_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(const App());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      title: "Personality Tracker",
       debugShowCheckedModeBanner: false,
-      home: StreamBuilder<User?>(
-        stream: FirebaseAuth.instance.authStateChanges(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
+      theme: ThemeData(),
+      home: const AuthWrapper(),
+    );
+  }
+}
 
-          if (snapshot.hasData) {
-            return  Homepage();
-          }
+/// 🔥 THIS DECIDES WHERE TO GO (HOME / LOGIN)
+class AuthWrapper extends StatelessWidget {
+  const AuthWrapper({super.key});
 
-          return  Loginpage();
-        },
-      ),
+  @override
+  Widget build(BuildContext context) {
+    return StreamBuilder<User?>(
+      stream: FirebaseAuth.instance.authStateChanges(),
+      builder: (context, snapshot) {
+        // Loading
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return  Splashscreen();
+        }
+
+        // ✅ User logged in
+        if (snapshot.hasData) {
+          return  Homepage();
+        }
+
+        // ❌ User not logged in
+        return  IntroPage();
+      },
     );
   }
 }
